@@ -1,0 +1,3 @@
+### Test Get All Products
+GET http://localhost:5146/api/productlist
+Content-Type: application/json
