@@ -1,0 +1,1 @@
+BackEndInventory follows the dotnet web api template
