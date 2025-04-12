@@ -1,0 +1,1 @@
+FrontEndInventory follows the blazor web assembly template.
