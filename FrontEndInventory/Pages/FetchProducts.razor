@@ -1,0 +1,63 @@
+@page "/fetchproducts"
+
+<h3>Product List</h3>
+
+<ul>
+   @if (products != null)
+    {
+        foreach (var product in products)
+        {
+            <li>@product.Name - $@product.Price</li>
+        }
+    }
+    else
+    {
+        <li>Loading...</li>
+    }
+</ul>
+
+@code {
+    private Product[]? products;
+
+    [Inject]
+    public HttpClient? Http { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Instantiate HttpClient
+            Http = new HttpClient { BaseAddress = new Uri("http://localhost:5146") };
+
+            // Make the GET request to the API endpoint
+            var response = await Http.GetAsync("/api/productlist");
+
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
+            {
+                // Deserialize the JSON response into the Product array
+                var jsonString = await response.Content.ReadAsStringAsync();
+                products = System.Text.Json.JsonSerializer.Deserialize<Product[]>(jsonString, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            else
+            {
+                products = Array.Empty<Product>();
+                Console.WriteLine($"API call failed: {response.StatusCode} - {response.ReasonPhrase}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+    public class Product
+    {
+        public int Id { get; set; }
+        public required string Name { get; set; }
+        public double Price { get; set; }
+        public int Stock { get; set; }
+    }
+}
