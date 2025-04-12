@@ -1,1 +1,3 @@
 Blazor pages here
+
+The FetchProducts page is where the data is retreived from the backend API
